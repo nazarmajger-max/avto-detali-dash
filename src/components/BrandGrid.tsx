@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/context/StoreContext';
 
 export function BrandGrid() {
   const { brands } = useStore();
+  const navigate = useNavigate();
 
   return (
     <section id="brands" className="py-16 bg-background">
@@ -12,6 +14,7 @@ export function BrandGrid() {
           {brands.map(brand => (
             <button
               key={brand.id}
+              onClick={() => navigate(`/catalog?brand=${encodeURIComponent(brand.name)}`)}
               className="bg-card rounded-xl p-6 flex flex-col items-center gap-3 card-hover border-2 border-transparent hover:border-orange cursor-pointer group"
             >
               <span className="text-3xl">{brand.logo}</span>

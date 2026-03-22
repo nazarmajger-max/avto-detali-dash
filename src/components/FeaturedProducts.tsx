@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useStore } from '@/context/StoreContext';
 import { useCart } from '@/context/CartContext';
 import { ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
+import { ProductModal } from '@/components/ProductModal';
+import { Product } from '@/types';
 
 export function FeaturedProducts() {
   const { products } = useStore();
   const { addToCart } = useCart();
   const featured = products.filter(p => p.badge).slice(0, 4);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   return (
     <section id="sale" className="py-16 bg-background">
@@ -17,7 +20,7 @@ export function FeaturedProducts() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {featured.map(product => (
             <div key={product.id} className="bg-card rounded-xl overflow-hidden card-hover border border-border group">
-              <div className="relative aspect-square bg-muted overflow-hidden">
+              <div className="relative aspect-square bg-muted overflow-hidden cursor-pointer" onClick={() => setSelectedProduct(product)}>
                 <img src={product.image} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                 {product.badge && (
                   <Badge className={`absolute top-3 left-3 ${product.badge === 'sale' ? 'bg-destructive' : 'bg-orange'} text-accent-foreground border-0 text-xs`}>
@@ -27,7 +30,9 @@ export function FeaturedProducts() {
               </div>
               <div className="p-4">
                 <p className="text-xs text-muted-foreground mb-1">{product.sku}</p>
-                <h3 className="font-medium text-sm mb-3 line-clamp-2 min-h-[2.5rem]">{product.name}</h3>
+                <h3 className="font-medium text-sm mb-3 line-clamp-2 min-h-[2.5rem] cursor-pointer hover:text-orange transition-colors" onClick={() => setSelectedProduct(product)}>
+                  {product.name}
+                </h3>
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-bold text-orange">{product.price} ₴</span>
                   <button
@@ -43,6 +48,7 @@ export function FeaturedProducts() {
           ))}
         </div>
       </div>
+      <ProductModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
     </section>
   );
 }

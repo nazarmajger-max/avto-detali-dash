@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       id: String(Date.now()),
       name,
       email,
-      role: 'customer',
+      role: 'admin',
       registeredAt: new Date().toISOString().split('T')[0],
       active: true,
     };

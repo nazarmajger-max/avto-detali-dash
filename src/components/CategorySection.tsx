@@ -1,20 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '@/context/StoreContext';
 import { Cog, Disc, Car, Filter, Boxes, Zap, Settings, Thermometer } from 'lucide-react';
 
 const iconMap: Record<string, React.ElementType> = {
-  engine: Cog,
-  brake: Disc,
-  suspension: Car,
-  filter: Filter,
-  body: Boxes,
-  electric: Zap,
-  transmission: Settings,
-  cooling: Thermometer,
+  engine: Cog, brake: Disc, suspension: Car, filter: Filter,
+  body: Boxes, electric: Zap, transmission: Settings, cooling: Thermometer,
 };
 
 export function CategorySection() {
   const { categories } = useStore();
+  const navigate = useNavigate();
 
   return (
     <section id="catalog" className="py-16 bg-muted">
@@ -26,6 +22,7 @@ export function CategorySection() {
             return (
               <button
                 key={cat.id}
+                onClick={() => navigate(`/catalog?category=${encodeURIComponent(cat.name)}`)}
                 className="bg-card rounded-xl p-6 flex flex-col items-center gap-3 card-hover border border-border hover:border-orange cursor-pointer group"
               >
                 <div className="w-14 h-14 rounded-full bg-orange-light flex items-center justify-center group-hover:bg-orange transition-colors">

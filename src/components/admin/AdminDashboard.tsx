@@ -1,18 +1,30 @@
 import React from 'react';
-import { useStore } from '@/context/StoreContext';
-import { useAuth } from '@/context/AuthContext';
-import { Package, ShoppingCart, Users, TrendingUp } from 'lucide-react';
+import { useProducts } from '@/hooks/useProducts';
+import { useOrders } from '@/hooks/useOrders';
+import { useProfiles } from '@/hooks/useProfiles';
+import { Package, ShoppingCart, Users, TrendingUp, Loader2 } from 'lucide-react';
 
 export function AdminDashboard() {
-  const { products, orders } = useStore();
-  const { users } = useAuth();
+  const { data: products = [], isLoading: pLoading } = useProducts();
+  const { data: orders = [], isLoading: oLoading } = useOrders();
+  const { data: profiles = [], isLoading: uLoading } = useProfiles();
+
+  const isLoading = pLoading || oLoading || uLoading;
+
+  const today = new Date().toISOString().split('T')[0];
+  const todayOrders = orders.filter(o => (o.created_at || '').startsWith(today));
+  const revenue = orders.filter(o => o.status === 'Доставлено').reduce((s, o) => s + Number(o.total), 0);
 
   const stats = [
     { label: 'Товарів у каталозі', value: products.length, icon: Package, color: 'text-blue-500 bg-blue-50' },
-    { label: 'Замовлень сьогодні', value: orders.filter(o => o.status === 'Новий').length, icon: ShoppingCart, color: 'text-green-500 bg-green-50' },
-    { label: 'Нових користувачів', value: users.length, icon: Users, color: 'text-purple-500 bg-purple-50' },
-    { label: 'Виручка за місяць', value: `${orders.reduce((s, o) => s + o.total, 0).toLocaleString()} ₴`, icon: TrendingUp, color: 'text-orange bg-orange-light' },
+    { label: 'Замовлень сьогодні', value: todayOrders.length, icon: ShoppingCart, color: 'text-green-500 bg-green-50' },
+    { label: 'Користувачів', value: profiles.length, icon: Users, color: 'text-purple-500 bg-purple-50' },
+    { label: 'Виручка (доставлені)', value: `${revenue.toLocaleString()} ₴`, icon: TrendingUp, color: 'text-orange bg-orange-light' },
   ];
+
+  if (isLoading) {
+    return <div className="flex justify-center py-12"><Loader2 className="animate-spin text-orange" size={32} /></div>;
+  }
 
   return (
     <div>
@@ -31,22 +43,22 @@ export function AdminDashboard() {
         ))}
       </div>
 
-      {/* Simple chart placeholder */}
       <div className="bg-card rounded-xl p-6 border border-border">
-        <h3 className="font-semibold mb-4">Замовлення за тиждень</h3>
-        <div className="flex items-end gap-3 h-40">
-          {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'].map((day, i) => {
-            const height = [60, 45, 80, 35, 90, 50, 30][i];
-            return (
-              <div key={day} className="flex-1 flex flex-col items-center gap-2">
-                <div className="w-full bg-orange/20 rounded-t-md relative" style={{ height: `${height}%` }}>
-                  <div className="absolute inset-x-0 bottom-0 bg-orange rounded-t-md" style={{ height: '70%' }} />
-                </div>
-                <span className="text-xs text-muted-foreground">{day}</span>
+        <h3 className="font-semibold mb-4">Останні замовлення</h3>
+        {orders.length === 0 ? (
+          <p className="text-sm text-muted-foreground">Замовлень ще немає</p>
+        ) : (
+          <div className="space-y-2">
+            {orders.slice(0, 5).map(o => (
+              <div key={o.id} className="flex items-center justify-between py-2 border-b last:border-0 text-sm">
+                <span className="font-medium">#{o.id.slice(0, 8).toUpperCase()}</span>
+                <span className="text-muted-foreground">{new Date(o.created_at || '').toLocaleDateString('uk-UA')}</span>
+                <span className="font-semibold">{Number(o.total).toLocaleString()} ₴</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-muted">{o.status}</span>
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

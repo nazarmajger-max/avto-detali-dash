@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useStore } from '@/context/StoreContext';
+import { useBrands } from '@/hooks/useBrands';
 
 export function BrandGrid() {
-  const { brands } = useStore();
+  const { data: brands = [] } = useBrands();
   const navigate = useNavigate();
 
   return (
@@ -17,7 +17,7 @@ export function BrandGrid() {
               onClick={() => navigate(`/catalog?brand=${encodeURIComponent(brand.name)}`)}
               className="bg-card rounded-xl p-6 flex flex-col items-center gap-3 card-hover border-2 border-transparent hover:border-orange cursor-pointer group"
             >
-              <span className="text-3xl">{brand.logo}</span>
+              <span className="text-3xl">{brand.logo_url}</span>
               <span className="text-sm font-medium text-foreground group-hover:text-orange transition-colors">{brand.name}</span>
             </button>
           ))}

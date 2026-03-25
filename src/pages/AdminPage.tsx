@@ -2,7 +2,7 @@ import React from 'react';
 import { Navigate, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
-import { LayoutDashboard, Package, Car, ShoppingCart, Users, Settings, ChevronRight, LogOut } from 'lucide-react';
+import { LayoutDashboard, Package, Car, ShoppingCart, Users, Settings, ChevronRight, LogOut, Loader2 } from 'lucide-react';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { AdminProducts } from '@/components/admin/AdminProducts';
 import { AdminBrandsCategories } from '@/components/admin/AdminBrandsCategories';
@@ -20,8 +20,12 @@ const sidebarLinks = [
 ];
 
 const AdminPage = () => {
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
   const location = useLocation();
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-orange" size={32} /></div>;
+  }
 
   if (!user || user.role !== 'admin') {
     toast.error('Доступ заборонено. Тільки для адміністраторів.');
@@ -32,7 +36,6 @@ const AdminPage = () => {
 
   return (
     <div className="min-h-screen flex bg-muted">
-      {/* Sidebar */}
       <aside className="w-64 nav-gradient flex flex-col shrink-0">
         <div className="p-5 border-b border-white/10">
           <Link to="/" className="flex items-center gap-2">
@@ -47,13 +50,10 @@ const AdminPage = () => {
           {sidebarLinks.map(link => {
             const active = location.pathname === link.path;
             return (
-              <Link
-                key={link.path}
-                to={link.path}
+              <Link key={link.path} to={link.path}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors ${
                   active ? 'bg-sidebar-accent text-accent-foreground font-medium' : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
-                }`}
-              >
+                }`}>
                 <link.icon size={18} className={active ? 'text-orange' : ''} />
                 {link.label}
               </Link>
@@ -62,16 +62,13 @@ const AdminPage = () => {
         </nav>
 
         <div className="p-3 border-t border-white/10">
-          <button
-            onClick={logout}
-            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent/50 w-full transition-colors"
-          >
+          <button onClick={logout}
+            className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-sidebar-foreground hover:bg-sidebar-accent/50 w-full transition-colors">
             <LogOut size={18} /> Вийти
           </button>
         </div>
       </aside>
 
-      {/* Main */}
       <div className="flex-1 flex flex-col min-h-screen">
         <header className="bg-card border-b px-6 py-4 flex items-center gap-2 text-sm">
           <Link to="/admin" className="text-muted-foreground hover:text-foreground transition-colors">Адмін</Link>

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { useStore } from '@/context/StoreContext';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 export function CartDrawer({ open, onOpenChange }: Props) {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
   const { user } = useAuth();
-  const { orders, setOrders } = useStore();
+  const navigate = useNavigate();
 
   const handleCheckout = () => {
     if (!user) {
@@ -22,22 +22,8 @@ export function CartDrawer({ open, onOpenChange }: Props) {
       return;
     }
     if (items.length === 0) return;
-
-    const newOrder = {
-      id: `ORD-${String(Date.now()).slice(-4)}`,
-      userId: user.id,
-      customerName: user.name,
-      date: new Date().toISOString().split('T')[0],
-      items: items.map(i => ({ product: i.product, quantity: i.quantity })),
-      total: totalPrice,
-      status: 'Новий' as const,
-      address: 'Адреса не вказана',
-    };
-
-    setOrders([newOrder, ...orders]);
-    clearCart();
     onOpenChange(false);
-    toast.success(`Замовлення ${newOrder.id} створено!`);
+    navigate('/checkout');
   };
 
   return (
@@ -60,7 +46,7 @@ export function CartDrawer({ open, onOpenChange }: Props) {
             <div className="flex-1 overflow-y-auto space-y-3 mt-4">
               {items.map(item => (
                 <div key={item.product.id} className="flex gap-3 p-3 bg-muted rounded-xl">
-                  <img src={item.product.image} alt="" className="w-16 h-16 rounded-lg object-cover shrink-0" />
+                  <img src={item.product.image_url || ''} alt="" className="w-16 h-16 rounded-lg object-cover shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium line-clamp-2">{item.product.name}</p>
                     <p className="text-xs text-muted-foreground">{item.product.sku}</p>
@@ -76,7 +62,7 @@ export function CartDrawer({ open, onOpenChange }: Props) {
                           <Plus size={14} />
                         </button>
                       </div>
-                      <span className="text-sm font-bold text-orange">{(item.product.price * item.quantity).toLocaleString()} ₴</span>
+                      <span className="text-sm font-bold text-orange">{(Number(item.product.price) * item.quantity).toLocaleString()} ₴</span>
                     </div>
                   </div>
                   <button onClick={() => removeFromCart(item.product.id)}

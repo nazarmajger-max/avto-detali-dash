@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useStore } from '@/context/StoreContext';
+import { useCategories } from '@/hooks/useCategories';
 import { Cog, Disc, Car, Filter, Boxes, Zap, Settings, Thermometer } from 'lucide-react';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -9,7 +9,7 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export function CategorySection() {
-  const { categories } = useStore();
+  const { data: categories = [] } = useCategories();
   const navigate = useNavigate();
 
   return (
@@ -18,7 +18,7 @@ export function CategorySection() {
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">Категорії запчастин</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {categories.map(cat => {
-            const Icon = iconMap[cat.icon] || Cog;
+            const Icon = iconMap[cat.icon || ''] || Cog;
             return (
               <button
                 key={cat.id}

@@ -5,11 +5,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
-import { StoreProvider } from "@/context/StoreContext";
-import Index from "./pages/Index.tsx";
-import AdminPage from "./pages/AdminPage.tsx";
-import CatalogPage from "./pages/CatalogPage.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import Index from "./pages/Index";
+import AdminPage from "./pages/AdminPage";
+import CatalogPage from "./pages/CatalogPage";
+import ProductPage from "./pages/ProductPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import ProfileOrdersPage from "./pages/ProfileOrdersPage";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -20,16 +22,17 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <CartProvider>
-          <StoreProvider>
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/catalog" element={<CatalogPage />} />
-                <Route path="/admin/*" element={<AdminPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </StoreProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/catalog" element={<CatalogPage />} />
+              <Route path="/product/:id" element={<ProductPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/profile/orders" element={<ProfileOrdersPage />} />
+              <Route path="/admin/*" element={<AdminPage />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
         </CartProvider>
       </AuthProvider>
     </TooltipProvider>

@@ -1,10 +1,8 @@
 import React from 'react';
 import { useCart } from '@/context/CartContext';
-import { useAuth } from '@/context/AuthContext';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 
 interface Props {
   open: boolean;
@@ -13,14 +11,9 @@ interface Props {
 
 export function CartDrawer({ open, onOpenChange }: Props) {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
-    if (!user) {
-      toast.error('Увійдіть в акаунт для оформлення замовлення');
-      return;
-    }
     if (items.length === 0) return;
     onOpenChange(false);
     navigate('/checkout');

@@ -10,6 +10,7 @@ import AdminPage from "./pages/AdminPage";
 import CatalogPage from "./pages/CatalogPage";
 import ProductPage from "./pages/ProductPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import OrderSuccessPage from "./pages/OrderSuccessPage";
 import ProfileOrdersPage from "./pages/ProfileOrdersPage";
 import NotFound from "./pages/NotFound";
 

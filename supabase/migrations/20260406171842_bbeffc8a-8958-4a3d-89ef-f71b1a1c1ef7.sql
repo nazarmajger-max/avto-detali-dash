@@ -1,0 +1,1 @@
+GRANT INSERT ON public.orders TO anon;

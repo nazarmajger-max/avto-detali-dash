@@ -7,12 +7,23 @@ import { Navigate } from 'react-router-dom';
 import { Loader2, Package } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
-const statusColors: Record<string, string> = {
-  'Новий': 'bg-blue-100 text-blue-700',
-  'В обробці': 'bg-yellow-100 text-yellow-700',
-  'Відправлено': 'bg-purple-100 text-purple-700',
-  'Доставлено': 'bg-green-100 text-green-700',
-  'Скасовано': 'bg-red-100 text-red-700',
+const statusConfig: Record<string, { label: string; color: string }> = {
+  'new': { label: 'Новий', color: 'bg-blue-100 text-blue-700' },
+  'Новий': { label: 'Новий', color: 'bg-blue-100 text-blue-700' },
+  'processing': { label: 'В обробці', color: 'bg-yellow-100 text-yellow-700' },
+  'В обробці': { label: 'В обробці', color: 'bg-yellow-100 text-yellow-700' },
+  'shipped': { label: 'Відправлено', color: 'bg-purple-100 text-purple-700' },
+  'Відправлено': { label: 'Відправлено', color: 'bg-purple-100 text-purple-700' },
+  'delivered': { label: 'Доставлено', color: 'bg-green-100 text-green-700' },
+  'Доставлено': { label: 'Доставлено', color: 'bg-green-100 text-green-700' },
+  'cancelled': { label: 'Скасовано', color: 'bg-red-100 text-red-700' },
+  'Скасовано': { label: 'Скасовано', color: 'bg-red-100 text-red-700' },
+};
+
+const deliveryLabels: Record<string, string> = {
+  nova_poshta: 'Нова Пошта',
+  ukrposhta: 'Укрпошта',
+  pickup: 'Самовивіз',
 };
 
 const ProfileOrdersPage = () => {
@@ -39,9 +50,9 @@ const ProfileOrdersPage = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {orders.map(order => {
+              {orders.map((order: any) => {
                 const items = (order.items as any[]) || [];
-                const delivery = (order.delivery_info as any) || {};
+                const si = statusConfig[order.status] || { label: order.status, color: 'bg-muted' };
                 return (
                   <div key={order.id} className="bg-card rounded-xl border border-border p-5">
                     <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -50,7 +61,7 @@ const ProfileOrdersPage = () => {
                         <p className="text-xs text-muted-foreground">{new Date(order.created_at || '').toLocaleDateString('uk-UA')}</p>
                       </div>
                       <div className="flex items-center gap-3">
-                        <Badge className={`border-0 ${statusColors[order.status] || ''}`}>{order.status}</Badge>
+                        <Badge className={`border-0 ${si.color}`}>{si.label}</Badge>
                         <span className="font-bold text-orange">{Number(order.total).toLocaleString()} ₴</span>
                       </div>
                     </div>
@@ -62,9 +73,10 @@ const ProfileOrdersPage = () => {
                         </div>
                       ))}
                     </div>
-                    {delivery.city && (
+                    {order.delivery_city && (
                       <p className="text-xs text-muted-foreground mt-2 pt-2 border-t">
-                        Доставка: {delivery.city}, {delivery.warehouse}
+                        Доставка: {deliveryLabels[order.delivery_method] || order.delivery_method}, {order.delivery_city}
+                        {order.delivery_branch ? `, ${order.delivery_branch}` : ''}
                       </p>
                     )}
                   </div>

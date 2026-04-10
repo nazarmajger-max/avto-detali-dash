@@ -116,7 +116,40 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
           </div>
         )}
 
-        {tab === 'login' ? (
+        {tab === 'forgot' ? (
+          forgotSent ? (
+            <div className="text-center space-y-4 py-4">
+              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                <span className="text-green-600 text-xl">✉️</span>
+              </div>
+              <h3 className="font-semibold">Перевірте вашу пошту</h3>
+              <p className="text-sm text-muted-foreground">
+                Ми надіслали лист з інструкціями для скидання пароля на <strong>{email}</strong>
+              </p>
+              <button onClick={() => { setTab('login'); setForgotSent(false); }}
+                className="text-sm text-orange hover:underline">
+                Повернутись до входу
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleForgotPassword} className="space-y-4">
+              <p className="text-sm text-muted-foreground">Введіть email, який ви використовували при реєстрації. Ми надішлемо вам посилання для скидання пароля.</p>
+              <div>
+                <label className="text-sm font-medium mb-1 block">Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                  className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange bg-background" placeholder="email@example.com" />
+              </div>
+              <button type="submit" disabled={submitting} className="w-full btn-orange py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60">
+                {submitting && <Loader2 size={16} className="animate-spin" />}
+                Надіслати посилання
+              </button>
+              <button type="button" onClick={() => setTab('login')}
+                className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Повернутись до входу
+              </button>
+            </form>
+          )
+        ) : tab === 'login' ? (
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="text-sm font-medium mb-1 block">Email</label>
@@ -131,6 +164,10 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
             <button type="submit" disabled={submitting} className="w-full btn-orange py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-60">
               {submitting && <Loader2 size={16} className="animate-spin" />}
               Увійти
+            </button>
+            <button type="button" onClick={() => setTab('forgot')}
+              className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Забули пароль?
             </button>
           </form>
         ) : (

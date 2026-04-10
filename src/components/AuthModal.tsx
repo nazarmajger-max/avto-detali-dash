@@ -96,7 +96,6 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
           <DialogTitle className="text-center text-xl">
             {tab === 'login' ? 'Вхід в акаунт' : tab === 'register' ? 'Реєстрація' : 'Відновлення пароля'}
           </DialogTitle>
-          </DialogTitle>
         </DialogHeader>
 
         {tab !== 'forgot' && (

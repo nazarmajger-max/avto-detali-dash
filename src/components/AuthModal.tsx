@@ -86,6 +86,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
     setConfirmPassword('');
     setFirstName('');
     setLastName('');
+    setForgotSent(false);
   };
 
   return (
@@ -93,24 +94,27 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-center text-xl">
-            {tab === 'login' ? 'Вхід в акаунт' : 'Реєстрація'}
+            {tab === 'login' ? 'Вхід в акаунт' : tab === 'register' ? 'Реєстрація' : 'Відновлення пароля'}
+          </DialogTitle>
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex border-b mb-4">
-          <button
-            onClick={() => setTab('login')}
-            className={`flex-1 py-2.5 text-sm font-medium transition-colors ${tab === 'login' ? 'border-b-2 border-orange text-orange' : 'text-muted-foreground'}`}
-          >
-            Увійти
-          </button>
-          <button
-            onClick={() => setTab('register')}
-            className={`flex-1 py-2.5 text-sm font-medium transition-colors ${tab === 'register' ? 'border-b-2 border-orange text-orange' : 'text-muted-foreground'}`}
-          >
-            Зареєструватись
-          </button>
-        </div>
+        {tab !== 'forgot' && (
+          <div className="flex border-b mb-4">
+            <button
+              onClick={() => setTab('login')}
+              className={`flex-1 py-2.5 text-sm font-medium transition-colors ${tab === 'login' ? 'border-b-2 border-orange text-orange' : 'text-muted-foreground'}`}
+            >
+              Увійти
+            </button>
+            <button
+              onClick={() => setTab('register')}
+              className={`flex-1 py-2.5 text-sm font-medium transition-colors ${tab === 'register' ? 'border-b-2 border-orange text-orange' : 'text-muted-foreground'}`}
+            >
+              Зареєструватись
+            </button>
+          </div>
+        )}
 
         {tab === 'login' ? (
           <form onSubmit={handleLogin} className="space-y-4">

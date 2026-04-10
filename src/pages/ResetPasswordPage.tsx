@@ -55,7 +55,7 @@ export default function ResetPasswordPage() {
       <div className="bg-card rounded-xl border border-border p-8 max-w-md w-full shadow-lg">
         {success ? (
           <div className="text-center space-y-4">
-            <CheckCircle className="mx-auto text-green-500" size={48} />
+            <CheckCircle className="mx-auto text-primary" size={48} />
             <h1 className="text-2xl font-bold">Пароль змінено!</h1>
             <p className="text-muted-foreground">Ваш пароль успішно оновлено. Тепер ви можете увійти з новим паролем.</p>
             <Link to="/" className="btn-orange inline-block px-6 py-2.5 rounded-lg text-sm">
